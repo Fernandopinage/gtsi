@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="GTSI — Plataforma de gestão integrada que reúne vendas, estoque, financeiro e integrações em um único sistema.">
+<meta name="theme-color" content="#f4efe3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141f19" media="(prefers-color-scheme: dark)">
+<title>GTSI — Um sistema por trás do seu negócio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4efe3; --bg-2:#ece2cb; --surface-alt:#e5dcc4; --panel:#ffffff;
+  --text:#161f18; --muted:#5c6559; --muted-2:#7c8577;
+  --brass:#8f6f22; --brass-deep:#6b551c; --line:#ddd0ac;
+  --display:'Space Grotesk',ui-sans-serif,system-ui,sans-serif; --body:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --header-h:68px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141f19; --bg-2:#1a251f; --surface-alt:#0f1712; --panel:#1c281f;
+    --text:#f1ece0; --muted:#a9b2a1; --muted-2:#8b9484;
+    --brass:#d3ab4a; --brass-deep:#e6c26b; --line:#2b3a30;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141f19; --bg-2:#1a251f; --surface-alt:#0f1712; --panel:#1c281f;
+  --text:#f1ece0; --muted:#a9b2a1; --muted-2:#8b9484;
+  --brass:#d3ab4a; --brass-deep:#e6c26b; --line:#2b3a30;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 16px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:4px}
+.wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
+.wrap.narrow{width:min(760px,calc(100% - 48px))}
+
+/* skip link */
+.skip-link{position:absolute;top:-100%;left:16px;background:var(--text);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:14px;z-index:100;text-decoration:none}
+.skip-link:focus{top:8px}
+
+/* nav */
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:0 0;height:var(--header-h)}
+.wordmark{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em;text-decoration:none}
+.navlinks{display:flex;align-items:center;gap:30px}
+.navlinks a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
+.navlinks a:hover,.navlinks a:focus-visible{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.btn{
+  font-family:var(--body);font-weight:600;font-size:14px;padding:11px 20px;border-radius:8px;
+  border:1px solid var(--text);background:transparent;color:var(--text);cursor:pointer;text-decoration:none;
+  transition:background .15s,color .15s,border-color .15s;display:inline-block;
+}
+.btn.solid{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn.solid:hover{background:var(--brass-deep);border-color:var(--brass-deep);color:#161108}
+.btn.ghost:hover{border-color:var(--brass);color:var(--brass-deep)}
+.theme-toggle{background:none;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;transition:border-color .15s,color .15s}
+.theme-toggle:hover{border-color:var(--brass);color:var(--brass-deep)}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer}
+
+/* mobile menu */
+.mobile-overlay{display:none;position:fixed;inset:0;background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(6px);z-index:45}
+.mobile-overlay.active{display:block}
+.mobile-menu{display:none;position:fixed;top:var(--header-h);right:0;width:min(300px,80vw);height:calc(100vh - var(--header-h));background:var(--panel);border-left:1px solid var(--line);z-index:46;padding:24px;flex-direction:column;gap:4px}
+.mobile-menu.active{display:flex}
+.mobile-menu a{padding:14px 16px;border-radius:8px;font-size:15px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s}
+.mobile-menu a:hover{background:var(--surface-alt);color:var(--text)}
+.mobile-menu .btn{margin-top:12px;text-align:center}
+
+/* hero */
+.hero{padding:88px 0 76px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.eyebrow{font-size:13px;color:var(--brass-deep);font-weight:600}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,4.6vw,52px);line-height:1.08;letter-spacing:-.02em;margin:16px 0 20px}
+.hero p.sub{font-size:17px;color:var(--muted);max-width:46ch;margin:0 0 30px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-note{margin-top:22px;font-size:13px;color:var(--muted-2)}
+
+.flow{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 26px}
+.flow-title{font-size:12.5px;color:var(--muted);margin-bottom:22px}
+.flow-steps{display:flex;flex-direction:column}
+.flow-step{display:flex;align-items:flex-start;gap:14px;padding:14px 0}
+.flow-step + .flow-step{border-top:1px dashed var(--line)}
+.flow-dot{width:9px;height:9px;border-radius:50%;background:var(--line);margin-top:6px;flex:none;transition:background .25s,box-shadow .25s}
+.flow-dot.lit{background:var(--brass);box-shadow:0 0 0 4px color-mix(in srgb, var(--brass) 18%, transparent)}
+.flow-step b{display:block;font-size:14.5px;font-weight:600}
+.flow-step span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* segments */
+.segments{padding:30px 0 10px;border-top:1px solid var(--line)}
+.segments .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.segments .cap{font-size:12.5px;color:var(--muted-2)}
+.chip-row{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-size:13px;padding:7px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+
+/* problem */
+section{padding:80px 0}
+.section-head{max-width:52ch;margin-bottom:44px}
+.section-head h2{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.01em;margin:0 0 12px}
+.section-head p{color:var(--muted);font-size:15.5px;margin:0}
+
+.problem-list{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+.problem-item{padding:24px 26px 24px 0;border-right:1px solid var(--line)}
+.problem-item:last-child{border-right:0}
+.problem-item .num{font-family:var(--display);font-size:13px;color:var(--muted-2)}
+.problem-item h3{font-size:16.5px;margin:10px 0 8px;font-weight:600}
+.problem-item p{font-size:14px;color:var(--muted);margin:0}
+
+/* pillars */
+.pillars{background:var(--surface-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+.pillar h3{font-family:var(--display);font-size:19px;font-weight:600;margin:0 0 10px}
+.pillar p{font-size:14.5px;color:var(--muted);margin:0}
+.pillar-mark{width:34px;height:2px;background:var(--brass);margin-bottom:16px}
+
+/* how it works */
+.steps{counter-reset:step}
+.step-row{display:grid;grid-template-columns:64px 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--line)}
+.steps .step-row:last-child{border-bottom:1px solid var(--line)}
+.step-num{font-family:var(--display);font-size:22px;color:var(--muted-2)}
+.step-row h3{margin:0 0 6px;font-size:17px;font-weight:600}
+.step-row p{margin:0;color:var(--muted);font-size:14.5px;max-width:60ch}
+
+/* trust */
+.trust-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.trust-list{display:flex;flex-direction:column;gap:22px}
+.trust-item{display:grid;grid-template-columns:22px 1fr;gap:14px}
+.trust-item .mk{width:22px;height:22px;border:1px solid var(--brass);border-radius:50%;display:grid;place-items:center;margin-top:2px}
+.trust-item .mk:after{content:"";width:7px;height:7px;background:var(--brass);border-radius:50%}
+.trust-item h4{margin:0 0 4px;font-size:15px;font-weight:600}
+.trust-item p{margin:0;font-size:13.5px;color:var(--muted)}
+.trust-side{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--panel)}
+.trust-side .label{font-size:12.5px;color:var(--muted)}
+.trust-side p{font-size:14.5px;color:var(--muted);margin-top:10px}
+.trust-side a{font-size:14px;font-weight:600;color:var(--brass-deep);text-decoration:underline;text-underline-offset:3px}
+
+/* contact */
+.contact{background:var(--text);color:var(--bg);border-radius:20px}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:50px;padding:56px}
+.contact h2{font-family:var(--display);font-size:30px;font-weight:600;margin:0 0 14px;letter-spacing:-.01em}
+.contact p{color:color-mix(in srgb, var(--bg) 70%, transparent);font-size:15px;max-width:44ch}
+.contact-detail{margin-top:26px;font-size:14px}
+.contact-detail div{margin-bottom:6px;color:color-mix(in srgb, var(--bg) 78%, transparent)}
+.form{display:flex;flex-direction:column;gap:12px}
+.form-group{position:relative}
+.form-group label{position:absolute;top:12px;left:14px;font-size:14px;color:color-mix(in srgb, var(--bg) 55%, transparent);pointer-events:none;transition:all .15s}
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label{top:-8px;left:10px;font-size:11px;background:var(--text);padding:0 4px;color:color-mix(in srgb, var(--bg) 65%, transparent)}
+.form input,.form textarea{
+  width:100%;padding:12px 14px;border-radius:8px;border:1px solid color-mix(in srgb, var(--bg) 30%, transparent);
+  background:transparent;color:var(--bg);font-family:var(--body);font-size:14px;
+  transition:border-color .15s;
+}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--brass)}
+.form textarea{resize:vertical;min-height:88px}
+.form .btn.solid{background:var(--bg);color:var(--text);border-color:var(--bg);margin-top:4px}
+.form .btn.solid:hover{background:var(--brass);border-color:var(--brass);color:#161108}
+.form-status{font-size:13px;margin-top:8px;display:none}
+.form-status.success{display:block;color:#4caf50}
+.form-status.error{display:block;color:#f44336}
+
+footer{padding:36px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--muted-2)}
+
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal.show{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* back to top */
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--text);color:var(--bg);border:none;cursor:pointer;display:grid;place-items:center;font-size:20px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;transform:translateY(8px);z-index:30}
+.back-to-top.visible{opacity:1;pointer-events:auto;transform:none}
+.back-to-top:hover{background:var(--brass-deep);color:#161108}
+
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .problem-list,.pillar-grid{grid-template-columns:1fr}
+  .problem-item{border-right:0;border-bottom:1px solid var(--line);padding:22px 0}
+  .trust-grid{grid-template-columns:1fr}
+  .contact-inner{grid-template-columns:1fr;padding:36px}
+}
+@media(max-width:680px){
+  .navlinks{display:none}
+  .menu-btn{display:inline-block}
+  .segments .wrap{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<header>
+  <div class="wrap navbar">
+    <a href="#" class="wordmark" aria-label="GTSI — Início">GTSI</a>
+    <nav class="navlinks" aria-label="Navegação principal">
+      <a href="#plataforma">Plataforma</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#confianca">Segurança</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="nav-right">
+      <button class="theme-toggle" aria-label="Alternar tema" title="Alternar tema">◐</button>
+      <a class="btn solid" href="#contato">Agendar conversa</a>
+    </div>
+    <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false">Menu</button>
+  </div>
+</header>
+
+<div class="mobile-overlay" aria-hidden="true"></div>
+<nav class="mobile-menu" aria-label="Menu mobile">
+  <a href="#plataforma">Plataforma</a>
+  <a href="#como-funciona">Como funciona</a>
+  <a href="#confianca">Segurança</a>
+  <a href="#contato">Contato</a>
+  <a class="btn solid" href="#contato">Agendar conversa</a>
+</nav>
+
+<main id="main">
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <div class="eyebrow">Plataforma de gestão integrada</div>
+      <h1>Um sistema por trás do seu negócio, não vários brigando entre si.</h1>
+      <p class="sub">A GTSI reúne vendas, estoque, financeiro e integrações externas em uma única base, para que cada decisão parta de um dado confiável — não de uma planilha atualizada à mão.</p>
+      <div class="hero-cta">
+        <a class="btn solid" href="#contato">Agendar uma conversa</a>
+        <a class="btn ghost" href="#como-funciona">Ver como funciona</a>
+      </div>
+      <div class="hero-note">Implantação assistida, sem migração às cegas.</div>
+    </div>
+    <div class="reveal">
+      <div class="flow" role="img" aria-label="Diagrama: Uma venda registrada atualiza estoque, financeiro e relatórios automaticamente">
+        <div class="flow-title">O mesmo evento, visível em todos os lugares certos</div>
+        <div class="flow-steps" id="flowSteps">
+          <div class="flow-step"><div class="flow-dot"></div><div><b>Uma venda é registrada</b><span>No caixa, no aplicativo ou por um parceiro integrado</span></div></div>
+          <div class="flow-step"><div class="flow-dot"></div><div><b>O estoque é ajustado</b><span>Sem lançamento manual, sem contagem divergente</span></div></div>
+          <div class="flow-step"><div class="flow-dot"></div><div><b>O financeiro reconhece o valor</b><span>Entrada, taxa e repasse já conciliados</span></div></div>
+          <div class="flow-step"><div class="flow-dot"></div><div><b>O relatório já está pronto</b><span>Para quem decide, não para quem digita</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="segments">
+  <div class="wrap">
+    <span class="cap">Atende negócios que operam com múltiplos sistemas e pontos de venda</span>
+    <div class="chip-row">
+      <span class="chip">Restaurantes e food service</span>
+      <span class="chip">Varejo</span>
+      <span class="chip">Redes com múltiplas unidades</span>
+      <span class="chip">Serviços com integrações externas</span>
+    </div>
+  </div>
+</div>
+
+<section id="plataforma">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>O problema não é falta de sistema. É excesso deles.</h2>
+      <p>Cada área ganhou sua própria ferramenta ao longo do tempo — e ninguém, nem o dono, nem o gestor, tem uma visão única do negócio.</p>
+    </div>
+    <div class="problem-list reveal">
+      <div class="problem-item">
+        <div class="num">Retrabalho</div>
+        <h3>Dado lançado duas ou três vezes</h3>
+        <p>A mesma venda é digitada no caixa, depois na planilha de estoque, depois na do financeiro — e cada cópia diverge da anterior.</p>
+      </div>
+      <div class="problem-item">
+        <div class="num">Visibilidade</div>
+        <h3>Decisão sem número confiável</h3>
+        <p>Quando o relatório demora dias para fechar, a decisão é tomada primeiro — e corrigida depois, se sobrar tempo.</p>
+      </div>
+      <div class="problem-item">
+        <div class="num">Risco</div>
+        <h3>Acesso sem controle</h3>
+        <p>Sem separação clara de permissões, qualquer pessoa com uma senha antiga ainda pode ver ou alterar o que não deveria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>O que a GTSI muda na prática</h2>
+      <p>Três compromissos que sustentam a plataforma, do primeiro dia de uso em diante.</p>
+    </div>
+    <div class="pillar-grid reveal">
+      <div class="pillar">
+        <div class="pillar-mark"></div>
+        <h3>Integração real</h3>
+        <p>Vendas, estoque, financeiro e parceiros externos compartilham a mesma base — um evento só precisa acontecer uma vez.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-mark"></div>
+        <h3>Controle por papel</h3>
+        <p>Cada pessoa vê e altera exatamente o que sua função exige, com todo acesso a dados sensíveis registrado.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-mark"></div>
+        <h3>Segurança auditável</h3>
+        <p>Os dados de cada cliente ficam isolados dos demais, e nenhuma mudança chega à produção sem passar por verificação.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="como-funciona">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Como começamos a trabalhar juntos</h2>
+      <p>A implantação segue quatro etapas, sempre com um responsável do seu time acompanhando de perto.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step-row"><div class="step-num">01</div><div><h3>Diagnóstico</h3><p>Levantamos os sistemas atuais, os pontos de atrito e o que precisa continuar funcionando sem interrupção durante a transição.</p></div></div>
+      <div class="step-row"><div class="step-num">02</div><div><h3>Migração assistida</h3><p>Os dados existentes são conferidos e importados com acompanhamento — nada é trocado de uma vez sem validação.</p></div></div>
+      <div class="step-row"><div class="step-num">03</div><div><h3>Integração dos sistemas</h3><p>Caixa, estoque, financeiro e parceiros externos passam a operar sobre a mesma base de dados.</p></div></div>
+      <div class="step-row"><div class="step-num">04</div><div><h3>Acompanhamento contínuo</h3><p>Depois do início da operação, o time acompanha uso, ajustes e novas integrações conforme o negócio cresce.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="confianca">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Segurança que se explica, não apenas se promete</h2>
+      <p>A confiabilidade da plataforma é tratada como parte do produto, não como um adendo de marketing.</p>
+    </div>
+    <div class="trust-grid reveal">
+      <div class="trust-list">
+        <div class="trust-item"><div class="mk"></div><div><h4>Isolamento entre clientes</h4><p>Os dados de uma conta nunca são acessíveis por outra — validado a cada operação, não apenas na configuração inicial.</p></div></div>
+        <div class="trust-item"><div class="mk"></div><div><h4>Mudanças com verificação obrigatória</h4><p>Nenhuma atualização chega à produção sem passar por testes automatizados e checagem de segurança.</p></div></div>
+        <div class="trust-item"><div class="mk"></div><div><h4>Credenciais nunca expostas</h4><p>Senhas e chaves de acesso são tratadas como dado sensível em todas as camadas do sistema, inclusive na própria documentação interna.</p></div></div>
+        <div class="trust-item"><div class="mk"></div><div><h4>Recuperação planejada</h4><p>Rotinas de rollback e continuidade são testadas antes de serem necessárias, não descobertas durante um incidente.</p></div></div>
+      </div>
+      <div class="trust-side">
+        <div class="label">Para times técnicos</div>
+        <p>Se o seu time de TI ou segurança quiser avaliar a plataforma antes de decidir, disponibilizamos a documentação completa de governança e arquitetura sob solicitação.</p>
+        <a href="#contato">Solicitar documentação técnica</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contato">
+  <div class="wrap">
+    <div class="contact reveal">
+      <div class="contact-inner">
+        <div>
+          <h2>Vamos conversar sobre o seu negócio</h2>
+          <p>Conte um pouco sobre como sua operação funciona hoje. Respondemos para combinar uma conversa de diagnóstico, sem compromisso.</p>
+          <div class="contact-detail">
+            <div>contato@gtsi.com.br</div>
+            <div>Atendimento em dias úteis, 9h às 18h</div>
+          </div>
+        </div>
+        <form class="form" id="contactForm" novalidate>
+          <div class="form-group">
+            <input type="text" id="nome" name="nome" placeholder=" " required autocomplete="name">
+            <label for="nome">Nome</label>
+          </div>
+          <div class="form-group">
+            <input type="text" id="empresa" name="empresa" placeholder=" " required autocomplete="organization">
+            <label for="empresa">Empresa</label>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" name="email" placeholder=" " required autocomplete="email">
+            <label for="email">E-mail</label>
+          </div>
+          <div class="form-group">
+            <textarea id="mensagem" name="mensagem" placeholder=" " rows="3"></textarea>
+            <label for="mensagem">Conte brevemente como sua operação funciona hoje</label>
+          </div>
+          <button type="submit" class="btn solid">Enviar solicitação</button>
+          <div class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<button class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">↑</button>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;width:100%">
+    <span>GTSI — Plataforma de gestão integrada</span>
+    <span>Todos os direitos reservados</span>
+  </div>
+</footer>
+
+<script>
+// Reveal on scroll
+const revealObserver = new IntersectionObserver(entries=>{
+  entries.forEach((entry,i)=>{
+    if(entry.isIntersecting){
+      entry.target.style.transitionDelay = (Math.min(i*40,160))+'ms';
+      entry.target.classList.add('show');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+// Flow animation
+const dots = document.querySelectorAll('#flowSteps .flow-dot');
+let fi = 0;
+function litNext(){
+  dots.forEach(d=>d.classList.remove('lit'));
+  dots[fi].classList.add('lit');
+  fi = (fi+1) % dots.length;
+}
+const flowObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      litNext();
+      setInterval(litNext, 1800);
+      flowObserver.disconnect();
+    }
+  });
+},{threshold:.4});
+flowObserver.observe(document.getElementById('flowSteps'));
+
+// Theme toggle
+const themeToggle = document.querySelector('.theme-toggle');
+const root = document.documentElement;
+const STORAGE_KEY = 'gtsi-theme';
+
+function setTheme(theme) {
+  root.setAttribute('data-theme', theme);
+  localStorage.setItem(STORAGE_KEY, theme);
+  const meta = document.querySelector('meta[name="theme-color"][media*="dark"]');
+  if (meta) meta.content = theme === 'dark' ? '#141f19' : '#f4efe3';
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = root.getAttribute('data-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = current ? (current === 'dark' ? 'light' : 'dark') : (prefersDark ? 'light' : 'dark');
+  setTheme(next);
+});
+
+// Mobile menu
+const menuBtn = document.querySelector('.menu-btn');
+const mobileMenu = document.querySelector('.mobile-menu');
+const mobileOverlay = document.querySelector('.mobile-overlay');
+
+function toggleMenu() {
+  const isOpen = mobileMenu.classList.contains('active');
+  mobileMenu.classList.toggle('active');
+  mobileOverlay.classList.toggle('active');
+  menuBtn.setAttribute('aria-expanded', !isOpen);
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+}
+
+menuBtn.addEventListener('click', toggleMenu);
+mobileOverlay.addEventListener('click', toggleMenu);
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  if (mobileMenu.classList.contains('active')) toggleMenu();
+}));
+
+// Form handling
+const form = document.getElementById('contactForm');
+const status = form.querySelector('.form-status');
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const data = new FormData(form);
+  const nome = data.get('nome').trim();
+  const empresa = data.get('empresa').trim();
+  const email = data.get('email').trim();
+
+  if (!nome || !empresa || !email) {
+    status.textContent = 'Por favor, preencha todos os campos obrigatórios.';
+    status.className = 'form-status error';
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    status.textContent = 'Por favor, insira um e-mail válido.';
+    status.className = 'form-status error';
+    return;
+  }
+
+  const btn = form.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  setTimeout(() => {
+    status.textContent = 'Solicitação enviada com sucesso! Entraremos em contato em breve.';
+    status.className = 'form-status success';
+    btn.textContent = 'Enviar solicitação';
+    btn.disabled = false;
+    form.reset();
+  }, 1200);
+});
+
+// Back to top
+const backToTop = document.querySelector('.back-to-top');
+window.addEventListener('scroll', () => {
+  backToTop.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
